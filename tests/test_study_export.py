@@ -1,13 +1,13 @@
 import json
 from unittest import TestCase
 
-from study_export import StudyExport
+from study_export import StudyExportFromAPI
 
 
-class TestStudyExport(TestCase):
+class TestStudyExporFromAPI(TestCase):
 
     def test_dump_from_api(self):
-        json_text = StudyExport().dump_from_api()
+        json_text = StudyExportFromAPI().json_dump()
         json_data = json.loads(json_text)
         assert json_data['name'] == 'EVA studies'
         assert json_data['entry_count'] >= 404
