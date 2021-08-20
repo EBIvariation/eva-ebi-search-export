@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import json
 from argparse import ArgumentParser
 from functools import cached_property
