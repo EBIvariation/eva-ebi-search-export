@@ -12,13 +12,13 @@ from ebi_eva_common_pyutils.pg_utils import get_all_results_for_query
 class StudyExport:
     """Abstract class to provide basic function for exporting studies to the JSON format"""
     @staticmethod
-    def get_fields(self, all_fields):
+    def get_fields(all_fields):
         return [
             {'name': f, 'value': all_fields[f]} for f in all_fields
         ]
 
     @staticmethod
-    def get_entry(self, fields, cross_references=None, hierarchical_field=None):
+    def get_entry(fields, cross_references=None, hierarchical_field=None):
         entry = {}
         if fields:
             entry['fields'] = fields
@@ -105,7 +105,7 @@ def main():
     parser.add_argument('--output_file', type=str, help='file where the data should be written', required=True)
     args = parser.parse_args()
     with open(args.output_file, 'w') as open_file:
-        print(StudyExportFromAPI().json_dump(), open_file)
+        print(StudyExportFromAPI().json_dump(), file=open_file)
 
 
 if __name__ == "__main__":
