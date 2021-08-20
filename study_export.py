@@ -9,7 +9,7 @@ from ebi_eva_common_pyutils.pg_utils import get_all_results_for_query
 
 
 class StudyExport:
-
+    """Abstract class to provide basic function for exporting studies to the JSON format"""
     @staticmethod
     def get_fields(self, all_fields):
         return [
@@ -40,6 +40,7 @@ class StudyExport:
 
 
 class StudyExportFromDB(StudyExport):
+    """Class that extract studies from the database and provide them in a JSON document."""
 
     def __init__(self, properties_file, profile='production'):
         self.properties_file = properties_file
@@ -71,6 +72,7 @@ class StudyExportFromDB(StudyExport):
 
 
 class StudyExportFromAPI(StudyExport):
+    """Class that extract studies from the API and provide them in a JSON document."""
 
     def json_dump(self):
         url = 'https://www.ebi.ac.uk/eva/webservices/rest/v1/meta/studies/all'
