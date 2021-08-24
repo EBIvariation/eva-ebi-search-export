@@ -18,7 +18,7 @@ class StudyExport:
         ]
 
     @staticmethod
-    def get_entry(fields, cross_references=None, hierarchical_field=None):
+    def set_values_to_entry(fields, cross_references=None, hierarchical_field=None):
         entry = {}
         if fields:
             entry['fields'] = fields
@@ -96,7 +96,7 @@ class StudyExportFromAPI(StudyExport):
                 if publication and publication != '-':
                     cross_reference.append({'dbname': 'PUBMED', 'dbkey': str(publication)})
             cross_reference.append({'dbname': 'ENA', 'dbkey': study['id']})
-            entries.append(self.get_entry(fields, cross_reference))
+            entries.append(self.set_values_to_entry(fields, cross_reference))
         return json.dumps(self.json_document(entries), indent=4)
 
 
