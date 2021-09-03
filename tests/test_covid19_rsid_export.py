@@ -48,10 +48,26 @@ class TestCovid19RSIDExport(TestCase):
         self.assertEqual(10, second_batch_json["entry_count"])
         self.assertEqual(3, third_batch_json["entry_count"])
         
-        first_batch_json_first_entry = first_batch_json["entries"][0]["fields"]
-        self.assertEqual(3161500004, first_batch_json_first_entry[0]["value"])
-        self.assertEqual("MN908947.3", first_batch_json_first_entry[1]["value"])
-        self.assertEqual(1780, first_batch_json_first_entry[2]["value"])
-        self.assertEqual("SNV", first_batch_json_first_entry[3]["value"])
-        self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/T", first_batch_json_first_entry[4]["value"])
-        self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/A", first_batch_json_first_entry[5]["value"])
+        first_batch_json_first_entry_fields = first_batch_json["entries"][0]["fields"]
+        first_batch_json_first_entry_xref = first_batch_json["entries"][0]["cross_references"]
+        self.assertEqual("id", first_batch_json_first_entry_fields[0]["name"])
+        self.assertEqual(3161500004, first_batch_json_first_entry_fields[0]["value"])
+
+        self.assertEqual("chromosome", first_batch_json_first_entry_fields[1]["name"])
+        self.assertEqual("MN908947.3", first_batch_json_first_entry_fields[1]["value"])
+
+        self.assertEqual("start", first_batch_json_first_entry_fields[2]["name"])
+        self.assertEqual(1780, first_batch_json_first_entry_fields[2]["value"])
+
+        self.assertEqual("variant_type", first_batch_json_first_entry_fields[3]["name"])
+        self.assertEqual("SNV", first_batch_json_first_entry_fields[3]["value"])
+
+        self.assertEqual("alleles", first_batch_json_first_entry_fields[4]["name"])
+        self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/T", first_batch_json_first_entry_fields[4]["value"])
+
+        self.assertEqual("alleles", first_batch_json_first_entry_fields[5]["name"])
+        self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/A", first_batch_json_first_entry_fields[5]["value"])
+
+        self.assertEqual(1, len(first_batch_json_first_entry_xref))
+        self.assertEqual("ENA", first_batch_json_first_entry_xref[0]["dbname"])
+        self.assertEqual("PRJEB43947", first_batch_json_first_entry_xref[0]["dbkey"])

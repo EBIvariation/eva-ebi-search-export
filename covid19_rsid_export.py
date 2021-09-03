@@ -41,7 +41,7 @@ def _get_allele_str(alleles: str) -> str:
 
 
 def get_search_json_entry(release_record: dict) -> dict:
-
+    studies = set([ssInfo["study"] for ssInfo in release_record["ssInfo"]])
     search_index_entry = {
         "fields": [
             {
@@ -61,11 +61,11 @@ def get_search_json_entry(release_record: dict) -> dict:
                 "value": release_record["type"]
             }
         ],
-        "cross_references": [{"dbname": "ENA", "dbkey": ssInfo["study"]} for ssInfo in release_record["ssInfo"]]
+        "cross_references": [{"dbname": "ENA", "dbkey": study} for study in studies]
     }
     for ssInfo in release_record["ssInfo"]:
         search_index_entry["fields"].append({
-            "name": "variants",
+            "name": "alleles",
             "value": f"Study: {ssInfo['study']}, "
                      f"Reference/Alternate: "
                      f"{_get_allele_str(ssInfo['ref'])}/{_get_allele_str(ssInfo['alt'])}"
