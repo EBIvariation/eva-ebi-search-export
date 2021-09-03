@@ -15,6 +15,12 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
+        mongo-version: [4.0.18]
+    services:
+      mongodb:
+        image: mongo:${{ matrix.mongo-version }}
+        ports:
+          - 27017:27017
 
     steps:
     - uses: actions/checkout@v2
