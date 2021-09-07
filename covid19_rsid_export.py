@@ -101,7 +101,7 @@ def covid19_rsid_export(assembly_accession: str, mongo_handle: pymongo.MongoClie
 def main():
     parser = argparse.ArgumentParser(description='Export Covid-19 RS ID data to EBI search JSON format')
     parser.add_argument('--assembly-accession', type=str, help="ex: Covid-19 assembly accession (ex: GCA_009858895.3)",
-                        required=True)
+                        default="GCA_009858895.3", required=False)
     parser.add_argument('--private-config-xml-file', type=str, help="ex: /path/to/eva-maven-settings.xml",
                         required=True)
     parser.add_argument('--mongo-profile', type=str, help='MongoDB profile to use (ex: development, production etc.,) ',
