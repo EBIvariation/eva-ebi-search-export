@@ -17,7 +17,6 @@ timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 BATCH_SIZE = 1000
 ACCESSIONING_DATABASE_NAME = "eva_accession_sharded"
 RELEASE_RECORD_COLLECTION_NAME = "releaseRecordEntity"
-COVID19_ASSEMBLY_ACCESSION = "GCA_009858895.3"
 
 
 # See https://stackoverflow.com/a/57802672
@@ -46,7 +45,7 @@ def get_search_json_entry(release_record: dict) -> dict:
         "fields": [
             {
                 "name": "id",
-                "value": release_record["accession"]
+                "value": f'rs{release_record["accession"]}'
             },
             {
                 "name": "chromosome",
@@ -85,11 +84,12 @@ def write_batch_to_output_dir(release_records: List[dict], json_output_file_name
         print(json.dumps(json_output_for_batch, indent=4), file=json_output_file_handle)
 
 
-def covid19_rsid_export(mongo_handle: pymongo.MongoClient, batch_size: int, json_output_dir: str):
+def covid19_rsid_export(assembly_accession: str, mongo_handle: pymongo.MongoClient, batch_size: int,
+                        json_output_dir: str):
     release_collection_handle = mongo_handle[ACCESSIONING_DATABASE_NAME].get_collection(
         name=RELEASE_RECORD_COLLECTION_NAME, read_preference=ReadPreference.SECONDARY_PREFERRED,
         read_concern=ReadConcern('majority'))
-    regex_to_find = {"$regex": f"{COVID19_ASSEMBLY_ACCESSION}_*"}
+    regex_to_find = {"$regex": f"{assembly_accession}_*"}
     with release_collection_handle.find({"_id": regex_to_find}, sort=[('_id', pymongo.ASCENDING)],
                                         no_cursor_timeout=True) as cursor:
         for batch_index, release_records in enumerate(_as_batch(cursor, batch_size)):
@@ -100,6 +100,8 @@ def covid19_rsid_export(mongo_handle: pymongo.MongoClient, batch_size: int, json
 
 def main():
     parser = argparse.ArgumentParser(description='Export Covid-19 RS ID data to EBI search JSON format')
+    parser.add_argument('--assembly-accession', type=str, help="ex: Covid-19 assembly accession (ex: GCA_009858895.3)",
+                        required=True)
     parser.add_argument('--private-config-xml-file', type=str, help="ex: /path/to/eva-maven-settings.xml",
                         required=True)
     parser.add_argument('--mongo-profile', type=str, help='MongoDB profile to use (ex: development, production etc.,) ',
@@ -109,7 +111,7 @@ def main():
     args = parser.parse_args()
     with MongoClient(get_mongo_uri_for_eva_profile(eva_profile_name=args.mongo_profile,
                                                    settings_xml_file=args.private_config_xml_file)) as mongo_handle:
-        covid19_rsid_export(mongo_handle, BATCH_SIZE, args.json_output_dir)
+        covid19_rsid_export(args.assembly_accession, mongo_handle, BATCH_SIZE, args.json_output_dir)
 
 
 if __name__ == "__main__":

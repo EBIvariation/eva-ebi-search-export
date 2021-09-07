@@ -37,7 +37,8 @@ class TestCovid19RSIDExport(TestCase):
         self.mongo_handle.close()
 
     def test_export(self):
-        covid19_rsid_export(self.mongo_handle, batch_size=10, json_output_dir=self.processing_folder)
+        covid19_rsid_export("GCA_009858895.3", self.mongo_handle, batch_size=10,
+                            json_output_dir=self.processing_folder)
         # With a batch size of 10, ensure that the index records generated for the 23 records in the database
         # are split across 3 files, 2 each with 10 records and another with 3 records
         self.assertEqual(3, len(os.listdir(self.processing_folder)))
@@ -51,7 +52,7 @@ class TestCovid19RSIDExport(TestCase):
         first_batch_json_first_entry_fields = first_batch_json["entries"][0]["fields"]
         first_batch_json_first_entry_xref = first_batch_json["entries"][0]["cross_references"]
         self.assertEqual("id", first_batch_json_first_entry_fields[0]["name"])
-        self.assertEqual(3161500004, first_batch_json_first_entry_fields[0]["value"])
+        self.assertEqual("rs3161500004", first_batch_json_first_entry_fields[0]["value"])
 
         self.assertEqual("chromosome", first_batch_json_first_entry_fields[1]["name"])
         self.assertEqual("MN908947.3", first_batch_json_first_entry_fields[1]["value"])
