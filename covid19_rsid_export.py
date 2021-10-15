@@ -40,45 +40,49 @@ def _get_allele_str(alleles: str) -> str:
 
 
 def get_search_json_entry(release_record: dict) -> dict:
-    studies = set([ssInfo["study"] for ssInfo in release_record["ssInfo"]])
-    search_index_entry = {
-        "fields": [
-            {
-                "name": "id",
-                "value": f'rs{release_record["accession"]}'
-            },
-            {
-                "name": "chromosome",
-                "value": release_record["contig"]
-            },
-            {
-                "name": "start",
-                "value": release_record["start"]
-            },
-            {
-                "name": "variant_type",
-                "value": release_record["type"]
-            }
-        ],
-        "cross_references": [{"dbname": "ENA", "dbkey": study} for study in studies]
-    }
+    search_index_entries_per_allele = []
     for ssInfo in release_record["ssInfo"]:
-        search_index_entry["fields"].append({
-            "name": "alleles",
-            "value": f"Study: {ssInfo['study']}, "
-                     f"Reference/Alternate: "
-                     f"{_get_allele_str(ssInfo['refWithCtxBase'])}/{_get_allele_str(ssInfo['altWithCtxBase'])}"
-        })
+        search_index_entry = {
+            "fields": [
+                {
+                    "name": "id",
+                    "value": f'rs{release_record["accession"]}'
+                },
+                {
+                    "name": "chromosome",
+                    "value": release_record["contig"]
+                },
+                {
+                    "name": "start",
+                    "value": release_record["start"]
+                },
+                {
+                    "name": "variant_type",
+                    "value": release_record["type"]
+                },
+                {
+                    "name": "alleles",
+                    "value": f"Study: {ssInfo['study']}, "
+                             f"Reference/Alternate: "
+                             f"{_get_allele_str(ssInfo['refWithCtxBase'])}/{_get_allele_str(ssInfo['altWithCtxBase'])}"
+                }
+            ],
+            "cross_references": [{"dbname": "ENA", "dbkey": ssInfo['study']}]
+        }
 
-    return search_index_entry
+        search_index_entries_per_allele.append(search_index_entry)
+
+    return search_index_entries_per_allele
 
 
 def write_batch_to_output_dir(release_records: List[dict], json_output_file_name: str):
     with open(json_output_file_name, "w") as json_output_file_handle:
-        search_json_entries = [get_search_json_entry(release_record) for release_record in release_records]
+        search_json_entries = []
+        for release_record in release_records:
+            search_json_entries.extend(get_search_json_entry(release_record))
         json_output_for_batch = {
             "name": "Covid-19 data portal - Variants",
-            "entry_count": len(release_records),
+            "entry_count": len(search_json_entries),
             "entries": search_json_entries
         }
         print(json.dumps(json_output_for_batch, indent=4), file=json_output_file_handle)

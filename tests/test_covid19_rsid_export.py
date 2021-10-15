@@ -40,14 +40,15 @@ class TestCovid19RSIDExport(TestCase):
         covid19_rsid_export("GCA_009858895.3", self.mongo_handle, batch_size=10,
                             json_output_dir=self.processing_folder)
         # With a batch size of 10, ensure that the index records generated for the 23 records in the database
-        # are split across 3 files, 2 each with 10 records and another with 3 records
+        # are split across 3 files, 2 each with 20 records and another with 6 records
+        # (each record will have multiple entries based on ssinfo(ref/alt combinations) entries present
         self.assertEqual(3, len(os.listdir(self.processing_folder)))
         first_batch_json = json.load(open(glob.glob(f"{self.processing_folder}/*_batch_0.json")[0]))
         second_batch_json = json.load(open(glob.glob(f"{self.processing_folder}/*_batch_1.json")[0]))
         third_batch_json = json.load(open(glob.glob(f"{self.processing_folder}/*_batch_2.json")[0]))
-        self.assertEqual(10, first_batch_json["entry_count"])
-        self.assertEqual(10, second_batch_json["entry_count"])
-        self.assertEqual(3, third_batch_json["entry_count"])
+        self.assertEqual(20, first_batch_json["entry_count"])
+        self.assertEqual(20, second_batch_json["entry_count"])
+        self.assertEqual(6, third_batch_json["entry_count"])
         
         first_batch_json_first_entry_fields = first_batch_json["entries"][0]["fields"]
         first_batch_json_first_entry_xref = first_batch_json["entries"][0]["cross_references"]
@@ -66,8 +67,9 @@ class TestCovid19RSIDExport(TestCase):
         self.assertEqual("alleles", first_batch_json_first_entry_fields[4]["name"])
         self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/T", first_batch_json_first_entry_fields[4]["value"])
 
-        self.assertEqual("alleles", first_batch_json_first_entry_fields[5]["name"])
-        self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/A", first_batch_json_first_entry_fields[5]["value"])
+        first_batch_json_second_entry_fields = first_batch_json["entries"][1]["fields"]
+        self.assertEqual("alleles", first_batch_json_second_entry_fields[4]["name"])
+        self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/A", first_batch_json_second_entry_fields[4]["value"])
 
         self.assertEqual(1, len(first_batch_json_first_entry_xref))
         self.assertEqual("ENA", first_batch_json_first_entry_xref[0]["dbname"])
