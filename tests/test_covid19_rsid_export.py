@@ -39,9 +39,9 @@ class TestCovid19RSIDExport(TestCase):
     def test_export(self):
         covid19_rsid_export("GCA_009858895.3", self.mongo_handle, batch_size=10,
                             json_output_dir=self.processing_folder)
-        # With a batch size of 10, ensure that the index records generated for the 23 records in the database
-        # are split across 3 files, 2 each with 20 records and another with 6 records
-        # (each record will have multiple entries based on ssinfo(ref/alt combinations) entries present
+        # With a batch size of 10, ensure that the 46 index records generated for the 23 records in the database
+        # are split across 3 files, 2 each with 20 index records and another with 6 index records
+        # (each db record is generating 2 index records based on ref/alt combination)
         self.assertEqual(3, len(os.listdir(self.processing_folder)))
         first_batch_json = json.load(open(glob.glob(f"{self.processing_folder}/*_batch_0.json")[0]))
         second_batch_json = json.load(open(glob.glob(f"{self.processing_folder}/*_batch_1.json")[0]))
