@@ -67,7 +67,7 @@ def get_search_json_entry(release_record: dict) -> dict:
             "name": "alleles",
             "value": f"Study: {ssInfo['study']}, "
                      f"Reference/Alternate: "
-                     f"{_get_allele_str(ssInfo['ref'])}/{_get_allele_str(ssInfo['alt'])}"
+                     f"{_get_allele_str(ssInfo['refWithCtxBase'])}/{_get_allele_str(ssInfo['altWithCtxBase'])}"
         })
 
     return search_index_entry
