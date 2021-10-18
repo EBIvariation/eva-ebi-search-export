@@ -61,10 +61,16 @@ def get_search_json_entry(release_record: dict) -> dict:
                     "value": release_record["type"]
                 },
                 {
-                    "name": "alleles",
-                    "value": f"Study: {ssInfo['study']}, "
-                             f"Reference/Alternate: "
-                             f"{_get_allele_str(ssInfo['refWithCtxBase'])}/{_get_allele_str(ssInfo['altWithCtxBase'])}"
+                    "name": "study",
+                    "value": ssInfo['study']
+                },
+                {
+                    "name": "reference",
+                    "value": f"{_get_allele_str(ssInfo['refWithCtxBase'])}"
+                },
+                {
+                    "name": "alternate",
+                    "value": f"{_get_allele_str(ssInfo['altWithCtxBase'])}"
                 }
             ],
             "cross_references": [{"dbname": "ENA", "dbkey": ssInfo['study']}]

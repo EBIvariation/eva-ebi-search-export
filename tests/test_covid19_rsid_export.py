@@ -64,12 +64,24 @@ class TestCovid19RSIDExport(TestCase):
         self.assertEqual("variant_type", first_batch_json_first_entry_fields[3]["name"])
         self.assertEqual("SNV", first_batch_json_first_entry_fields[3]["value"])
 
-        self.assertEqual("alleles", first_batch_json_first_entry_fields[4]["name"])
-        self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/T", first_batch_json_first_entry_fields[4]["value"])
+        self.assertEqual("study", first_batch_json_first_entry_fields[4]["name"])
+        self.assertEqual("PRJEB43947", first_batch_json_first_entry_fields[4]["value"])
+
+        self.assertEqual("reference", first_batch_json_first_entry_fields[5]["name"])
+        self.assertEqual("C", first_batch_json_first_entry_fields[5]["value"])
+
+        self.assertEqual("alternate", first_batch_json_first_entry_fields[6]["name"])
+        self.assertEqual("T", first_batch_json_first_entry_fields[6]["value"])
 
         first_batch_json_second_entry_fields = first_batch_json["entries"][1]["fields"]
-        self.assertEqual("alleles", first_batch_json_second_entry_fields[4]["name"])
-        self.assertEqual("Study: PRJEB43947, Reference/Alternate: C/A", first_batch_json_second_entry_fields[4]["value"])
+        self.assertEqual("study", first_batch_json_second_entry_fields[4]["name"])
+        self.assertEqual("PRJEB43947", first_batch_json_second_entry_fields[4]["value"])
+
+        self.assertEqual("reference", first_batch_json_second_entry_fields[5]["name"])
+        self.assertEqual("C", first_batch_json_second_entry_fields[5]["value"])
+
+        self.assertEqual("alternate", first_batch_json_second_entry_fields[6]["name"])
+        self.assertEqual("A", first_batch_json_second_entry_fields[6]["value"])
 
         self.assertEqual(1, len(first_batch_json_first_entry_xref))
         self.assertEqual("ENA", first_batch_json_first_entry_xref[0]["dbname"])
