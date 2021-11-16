@@ -25,5 +25,5 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3.8'
     ],
-    scripts=['study_export.py']
+    scripts=['study_export.py', 'covid19_rsid_export.py']
 )
