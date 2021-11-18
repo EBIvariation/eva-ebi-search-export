@@ -47,8 +47,8 @@ def get_search_json_entry(release_record: dict) -> dict:
     search_index_entries_per_allele = []
     for ssInfo in release_record["ssInfo"]:
         digest = get_SHA1([
-            release_record["contig"], ssInfo['study'], release_record["contig"],
-            release_record["start"], ssInfo['refWithCtxBase'], ssInfo['altWithCtxBase']
+            'GCA_009858895.3', ssInfo['study'], release_record["contig"], release_record["start"],
+            ssInfo['refWithCtxBase'], ssInfo['altWithCtxBase']
         ])
         search_index_entry = {
             "fields": [
