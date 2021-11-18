@@ -36,25 +36,14 @@ def _as_batch(cursor, batch_size=BATCH_SIZE):
             yield batch
 
 
-def get_SHA1(variant_rec):
-    """Calculate the SHA1 digest from the attributes of the variant provided as list"""
-    h = hashlib.sha1()
-    h.update('_'.join([str(elem) for elem in variant_rec]).encode())
-    return h.hexdigest().upper()
-
-
 def get_search_json_entry(release_record: dict) -> dict:
     search_index_entries_per_allele = []
     for ssInfo in release_record["ssInfo"]:
-        digest = get_SHA1([
-            'GCA_009858895.3', ssInfo['study'], release_record["contig"], release_record["start"],
-            ssInfo['refWithCtxBase'], ssInfo['altWithCtxBase']
-        ])
         search_index_entry = {
             "fields": [
                 {
                     "name": "id",
-                    "value": digest
+                    "value": ssInfo['accession']
                 },
                 {
                     "name": "rs",

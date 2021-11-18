@@ -53,7 +53,7 @@ class TestCovid19RSIDExport(TestCase):
         first_batch_json_first_entry_fields = first_batch_json["entries"][0]["fields"]
         first_batch_json_first_entry_xref = first_batch_json["entries"][0]["cross_references"]
         self.assertEqual("id", first_batch_json_first_entry_fields[0]["name"])
-        self.assertEqual("D2F07D79A8F8FF069566461E25AD0D19752241B0", first_batch_json_first_entry_fields[0]["value"])
+        self.assertEqual(7392553828, first_batch_json_first_entry_fields[0]["value"])
 
         self.assertEqual("rs", first_batch_json_first_entry_fields[1]["name"])
         self.assertEqual("rs3161500004", first_batch_json_first_entry_fields[1]["value"])
