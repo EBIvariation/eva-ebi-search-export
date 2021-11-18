@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import datetime
+import hashlib
 import json
 import os
 import pymongo
@@ -35,17 +36,28 @@ def _as_batch(cursor, batch_size=BATCH_SIZE):
             yield batch
 
 
-def _get_allele_str(alleles: str) -> str:
-    return alleles if alleles else '-'
+def get_SHA1(variant_rec):
+    """Calculate the SHA1 digest from the attributes of the variant provided as list"""
+    h = hashlib.sha1()
+    h.update('_'.join([str(elem) for elem in variant_rec]).encode())
+    return h.hexdigest().upper()
 
 
 def get_search_json_entry(release_record: dict) -> dict:
     search_index_entries_per_allele = []
     for ssInfo in release_record["ssInfo"]:
+        digest = get_SHA1([
+            release_record["contig"], ssInfo['study'], release_record["contig"],
+            release_record["start"], ssInfo['refWithCtxBase'], ssInfo['altWithCtxBase']
+        ])
         search_index_entry = {
             "fields": [
                 {
                     "name": "id",
+                    "value": digest
+                },
+                {
+                    "name": "rs",
                     "value": f'rs{release_record["accession"]}'
                 },
                 {
@@ -66,11 +78,11 @@ def get_search_json_entry(release_record: dict) -> dict:
                 },
                 {
                     "name": "reference",
-                    "value": f"{_get_allele_str(ssInfo['refWithCtxBase'])}"
+                    "value": f"{ssInfo['refWithCtxBase']}"
                 },
                 {
                     "name": "alternate",
-                    "value": f"{_get_allele_str(ssInfo['altWithCtxBase'])}"
+                    "value": f"{ssInfo['altWithCtxBase']}"
                 }
             ],
             "cross_references": [{"dbname": "ENA", "dbkey": ssInfo['study']}]
