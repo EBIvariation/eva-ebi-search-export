@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import argparse
 import datetime
-import hashlib
 import json
 import os
 import pymongo
