@@ -35,10 +35,6 @@ def _as_batch(cursor, batch_size=BATCH_SIZE):
             yield batch
 
 
-def _get_allele_str(alleles: str) -> str:
-    return alleles if alleles else '-'
-
-
 def get_search_json_entry(release_record: dict) -> dict:
     search_index_entries_per_allele = []
     for ssInfo in release_record["ssInfo"]:
@@ -46,6 +42,10 @@ def get_search_json_entry(release_record: dict) -> dict:
             "fields": [
                 {
                     "name": "id",
+                    "value": ssInfo['accession']
+                },
+                {
+                    "name": "rs",
                     "value": f'rs{release_record["accession"]}'
                 },
                 {
@@ -66,11 +66,11 @@ def get_search_json_entry(release_record: dict) -> dict:
                 },
                 {
                     "name": "reference",
-                    "value": f"{_get_allele_str(ssInfo['refWithCtxBase'])}"
+                    "value": f"{ssInfo['refWithCtxBase']}"
                 },
                 {
                     "name": "alternate",
-                    "value": f"{_get_allele_str(ssInfo['altWithCtxBase'])}"
+                    "value": f"{ssInfo['altWithCtxBase']}"
                 }
             ],
             "cross_references": [{"dbname": "ENA", "dbkey": ssInfo['study']}]
