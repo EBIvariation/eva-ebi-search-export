@@ -2,9 +2,14 @@ stages:
   - test
   - deploy
 
+variables:
+  MONGO_HOST: mongo
+
 test:
   stage: test
   image: python:3.8.7-slim-buster
+  services:
+    - mongo:4.0.18
   before_script:
     - python -m pip install --upgrade pip
     - pip install pytest certifi
@@ -22,6 +27,7 @@ test:
     - external_pull_requests
     - tags
     - main
+    - EVA-2784
 
 
 # Not executed, parent job definition
