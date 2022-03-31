@@ -27,7 +27,6 @@ test:
     - external_pull_requests
     - tags
     - main
-    - EVA-2784
 
 
 # Not executed, parent job definition
