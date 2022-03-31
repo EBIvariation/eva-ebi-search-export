@@ -21,7 +21,7 @@ class TestCovid19RSIDExport(TestCase):
     def setUp(self) -> None:
         os.makedirs(self.processing_folder, exist_ok=True)
         self.mongo_handle = pymongo.MongoClient()
-        self.cleanupDB()
+        self.cleanupDB(close=False)
         with open(self.json_to_be_loaded_to_mongo) as json_file_handle:
             json_documents = json.load(json_file_handle)
             # Insert 23 records
@@ -32,9 +32,10 @@ class TestCovid19RSIDExport(TestCase):
         self.cleanupDB()
         shutil.rmtree(self.processing_folder, ignore_errors=True)
 
-    def cleanupDB(self):
+    def cleanupDB(self, close=True):
         self.mongo_handle.drop_database(ACCESSIONING_DATABASE_NAME)
-        self.mongo_handle.close()
+        if close:
+            self.mongo_handle.close()
 
     def test_export(self):
         covid19_rsid_export("GCA_009858895.3", self.mongo_handle, batch_size=10,

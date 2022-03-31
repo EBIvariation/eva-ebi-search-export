@@ -31,13 +31,13 @@ test:
   environment:
     name: $ENVIRONMENT_NAME
   script:
-    # Start ssh-agent and set identity then copy the Jar file and create a symlink
+    # Start ssh-agent and set identity then run deploy script
     # See https://docs.gitlab.com/ee/ci/ssh_keys/
     - apt-get update
     - apt-get -y install openssh-client
     - eval "$(ssh-agent)"
     - echo "$EVA_ETL_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${CLUSTER_USER}@${CLUSTER_LOGIN_NODE} "${EVA_SOFTWARE_PATH}/eva-ebi-search-export/${ENVIRONMENT_NAME}_deployments/deploy.sh ${DEPLOY_POINT}"
+    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${CLUSTER_USER}@${CLUSTER_LOGIN_NODE_CODON} "${EVA_SOFTWARE_PATH_CODON}/eva-ebi-search-export/${ENVIRONMENT_NAME}_deployments/deploy.sh ${DEPLOY_POINT}"
   dependencies:
     - test
 
