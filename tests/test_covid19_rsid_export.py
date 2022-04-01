@@ -17,10 +17,11 @@ class TestCovid19RSIDExport(TestCase):
         self.resources_folder = os.path.join(base_dir, 'tests', 'resources')
         self.processing_folder = os.path.join(self.resources_folder, 'processing')
         self.json_to_be_loaded_to_mongo = os.path.join(self.resources_folder, 'covid19_release_record_test_data.json')
+        self.mongo_host = os.getenv('MONGO_HOST', 'localhost')
 
     def setUp(self) -> None:
         os.makedirs(self.processing_folder, exist_ok=True)
-        self.mongo_handle = pymongo.MongoClient()
+        self.mongo_handle = pymongo.MongoClient(host=self.mongo_host)
         self.cleanupDB(close=False)
         with open(self.json_to_be_loaded_to_mongo) as json_file_handle:
             json_documents = json.load(json_file_handle)
