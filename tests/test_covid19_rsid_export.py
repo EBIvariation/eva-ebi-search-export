@@ -54,8 +54,11 @@ class TestCovid19RSIDExport(TestCase):
         
         first_batch_json_first_entry_fields = first_batch_json["entries"][0]["fields"]
         first_batch_json_first_entry_xref = first_batch_json["entries"][0]["cross_references"]
+
+        self.assertEqual(9, len(first_batch_json_first_entry_fields))
+
         self.assertEqual("id", first_batch_json_first_entry_fields[0]["name"])
-        self.assertEqual(7392553828, first_batch_json_first_entry_fields[0]["value"])
+        self.assertEqual('7392553828_7392553829', first_batch_json_first_entry_fields[0]["value"])
 
         self.assertEqual("rs", first_batch_json_first_entry_fields[1]["name"])
         self.assertEqual("rs3161500004", first_batch_json_first_entry_fields[1]["value"])
@@ -69,25 +72,32 @@ class TestCovid19RSIDExport(TestCase):
         self.assertEqual("variant_type", first_batch_json_first_entry_fields[4]["name"])
         self.assertEqual("SNV", first_batch_json_first_entry_fields[4]["value"])
 
-        self.assertEqual("study", first_batch_json_first_entry_fields[5]["name"])
-        self.assertEqual("PRJEB45554", first_batch_json_first_entry_fields[5]["value"])
+        self.assertEqual("reference", first_batch_json_first_entry_fields[5]["name"])
+        self.assertEqual("C", first_batch_json_first_entry_fields[5]["value"])
 
-        self.assertEqual("reference", first_batch_json_first_entry_fields[6]["name"])
-        self.assertEqual("C", first_batch_json_first_entry_fields[6]["value"])
+        self.assertEqual("alternate", first_batch_json_first_entry_fields[6]["name"])
+        self.assertEqual("T", first_batch_json_first_entry_fields[6]["value"])
 
-        self.assertEqual("alternate", first_batch_json_first_entry_fields[7]["name"])
-        self.assertEqual("T", first_batch_json_first_entry_fields[7]["value"])
+        self.assertEqual("study", first_batch_json_first_entry_fields[7]["name"])
+        self.assertEqual("PRJEB45554", first_batch_json_first_entry_fields[7]["value"])
+
+        self.assertEqual("study", first_batch_json_first_entry_fields[8]["name"])
+        self.assertEqual("PRJEB99999", first_batch_json_first_entry_fields[8]["value"])
 
         first_batch_json_second_entry_fields = first_batch_json["entries"][1]["fields"]
-        self.assertEqual("study", first_batch_json_second_entry_fields[5]["name"])
-        self.assertEqual("PRJEB45554", first_batch_json_second_entry_fields[5]["value"])
 
-        self.assertEqual("reference", first_batch_json_second_entry_fields[6]["name"])
-        self.assertEqual("C", first_batch_json_second_entry_fields[6]["value"])
+        self.assertEqual("reference", first_batch_json_second_entry_fields[5]["name"])
+        self.assertEqual("C", first_batch_json_second_entry_fields[5]["value"])
 
-        self.assertEqual("alternate", first_batch_json_second_entry_fields[7]["name"])
-        self.assertEqual("A", first_batch_json_second_entry_fields[7]["value"])
+        self.assertEqual("alternate", first_batch_json_second_entry_fields[6]["name"])
+        self.assertEqual("A", first_batch_json_second_entry_fields[6]["value"])
 
-        self.assertEqual(1, len(first_batch_json_first_entry_xref))
+        self.assertEqual("study", first_batch_json_second_entry_fields[7]["name"])
+        self.assertEqual("PRJEB45554", first_batch_json_second_entry_fields[7]["value"])
+
+        self.assertEqual(2, len(first_batch_json_first_entry_xref))
         self.assertEqual("ENA", first_batch_json_first_entry_xref[0]["dbname"])
         self.assertEqual("PRJEB45554", first_batch_json_first_entry_xref[0]["dbkey"])
+
+        self.assertEqual("ENA", first_batch_json_first_entry_xref[1]["dbname"])
+        self.assertEqual("PRJEB99999", first_batch_json_first_entry_xref[1]["dbkey"])

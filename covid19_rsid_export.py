@@ -3,6 +3,8 @@ import argparse
 import datetime
 import json
 import os
+from collections import defaultdict
+
 import pymongo
 
 from ebi_eva_common_pyutils.mongo_utils import get_mongo_uri_for_eva_profile
@@ -35,14 +37,24 @@ def _as_batch(cursor, batch_size=BATCH_SIZE):
             yield batch
 
 
+def aggregate_per_allele(release_record):
+    per_allele = defaultdict(list)
+    for ssInfo in release_record["ssInfo"]:
+        allele = (ssInfo['refWithCtxBase'], ssInfo['altWithCtxBase'])
+        per_allele[allele].append(ssInfo)
+    return per_allele
+
+
 def get_search_json_entry(release_record: dict) -> dict:
     search_index_entries_per_allele = []
-    for ssInfo in release_record["ssInfo"]:
+    aggregated_alleles = aggregate_per_allele(release_record)
+    for refWithCtxBase, altWithCtxBase in aggregated_alleles:
+        ssInfo_list = aggregated_alleles.get((refWithCtxBase, altWithCtxBase))
         search_index_entry = {
             "fields": [
                 {
                     "name": "id",
-                    "value": ssInfo['accession']
+                    "value": '_'.join((str(ssInfo['accession']) for ssInfo in ssInfo_list))
                 },
                 {
                     "name": "rs",
@@ -61,20 +73,19 @@ def get_search_json_entry(release_record: dict) -> dict:
                     "value": release_record["type"]
                 },
                 {
-                    "name": "study",
-                    "value": ssInfo['study']
-                },
-                {
                     "name": "reference",
-                    "value": f"{ssInfo['refWithCtxBase']}"
+                    "value": f"{refWithCtxBase}"
                 },
                 {
                     "name": "alternate",
-                    "value": f"{ssInfo['altWithCtxBase']}"
+                    "value": f"{altWithCtxBase}"
                 }
             ],
-            "cross_references": [{"dbname": "ENA", "dbkey": ssInfo['study']}]
+            "cross_references": []
         }
+        for ssInfo in ssInfo_list:
+            search_index_entry["fields"].append({"name": "study", "value": ssInfo["study"]},)
+            search_index_entry["cross_references"].append({"dbname": "ENA", "dbkey": ssInfo['study']})
 
         search_index_entries_per_allele.append(search_index_entry)
 
